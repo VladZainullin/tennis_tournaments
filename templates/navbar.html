@@ -15,17 +15,21 @@
         </div>
         {% if user.is_authenticated %}
             <div>
-                {% if not user.is_staff %}
-                    <a class="btn btn-light" href={% url 'get_basket' %}>
-                        <i class="fa-regular fa-cart-shopping"></i>
-                    </a>
-                {% endif %}
                 <a href="#" class="btn btn-outline-light">Выйти</a>
             </div>
         {% else %}
-            <div>
-                <a href="#" class="btn btn-light">Войти</a>
-                <a href="#" class="btn btn-outline-light">Зарегистрироваться</a>
+            <div class="d-flex flex-row">
+                <div class="dropdown">
+                    <a href="#" class="btn btn-light">Войти</a>
+                    <a class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
+                        Регистрация
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Участнику</a></li>
+                        <li><a class="dropdown-item" href="#">Организатору</a></li>
+                        <li><a class="dropdown-item" href="#">Судье</a></li>
+                    </ul>
+                </div>
             </div>
         {% endif %}
 </nav>

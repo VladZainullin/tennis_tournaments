@@ -6,17 +6,6 @@
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                {% if not user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'get_user_orders' %}">Мои заказы</a>
-                    </li>
-                {% else %}
-                    {% if not user.is_superuser %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'get_processing_orders' %}">Заказы пользователя</a>
-                        </li>
-                    {% endif %}
-                {% endif %}
                 {% if user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link" href="http://127.0.0.1:8000/admin">Панель администратора</a>

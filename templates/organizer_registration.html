@@ -1,0 +1,44 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="post" action="{% url 'organizer-registration' %}" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <!-- Имя пользователя -->
+                    <div class="form-group">
+                        <label for="id_username">Имя пользователя:</label>
+                        <input type="text" name="username" id="id_username" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите имя пользователя.
+                        </div>
+                    </div>
+
+                    <!-- Пароль -->
+                    <div class="form-group">
+                        <label for="id_password1">Пароль:</label>
+                        <input type="password" name="password1" id="id_password1" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите пароль.
+                        </div>
+                    </div>
+
+                    <!-- Повторите пароль -->
+                    <div class="form-group">
+                        <label for="id_password2">Повторите пароль:</label>
+                        <input type="password" name="password2" id="id_password2" class="form-control"
+                               required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, повторите пароль.
+                        </div>
+                    </div>
+
+                    <!-- Кнопка для отправки формы -->
+                    <button type="submit" class="btn btn-dark mt-3">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

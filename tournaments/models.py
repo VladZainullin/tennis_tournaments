@@ -1,24 +1,38 @@
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import User, AbstractUser, PermissionsMixin
 from django.db import models
 
+from tournaments.custom_user_manager import CustomUserManager
 
-class CustomUser(AbstractUser):
 
-    def __str__(self):
-        return '%s %s' % (self.last_name, self.first_name)
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email: str = models.EmailField(max_length=256, unique=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+
+    objects = CustomUserManager()
 
     class Meta:
+        db_table = 'users'
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
 
-class Organizer(CustomUser):
-    title = models.CharField(
+class Organizer(models.Model):
+    title: str = models.CharField(
         max_length=50,
         verbose_name='Наименование')
 
+    user: CustomUser = models.OneToOneField(
+        to=CustomUser,
+        related_name='organizer',
+        on_delete=models.CASCADE)
+
     def __str__(self):
-        return self.username
+        return self.title
 
     class Meta:
         db_table = 'organizer'
@@ -47,10 +61,21 @@ class Tournament(models.Model):
         verbose_name_plural = 'Турниры'
 
 
-class Player(CustomUser):
-    patronymic: str = models.CharField(
+class Player(models.Model):
+    user: CustomUser = models.OneToOneField(
+        to=CustomUser,
+        related_name='player',
+        on_delete=models.CASCADE)
+
+    name: str = models.CharField(
         max_length=50,
         verbose_name='Имя')
+    surname: str = models.CharField(
+        max_length=50,
+        verbose_name='Фамилия')
+    patronymic: str = models.CharField(
+        max_length=50,
+        verbose_name='Отчество')
 
     def __str__(self):
         return self.surname + ' ' + self.name + ' ' + self.patronymic
@@ -80,7 +105,18 @@ class TournamentPlayer(models.Model):
         verbose_name_plural = 'Участники турнира'
 
 
-class Referee(CustomUser):
+class Referee(models.Model):
+    user: CustomUser = models.OneToOneField(
+        to=CustomUser,
+        related_name='referee',
+        on_delete=models.CASCADE)
+
+    name: str = models.CharField(
+        max_length=50,
+        verbose_name='Имя')
+    surname: str = models.CharField(
+        max_length=50,
+        verbose_name='Фамилия')
     patronymic: str = models.CharField(
         max_length=50,
         verbose_name='Отчество')

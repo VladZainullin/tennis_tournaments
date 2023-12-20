@@ -15,7 +15,7 @@
         </div>
         {% if user.is_authenticated %}
             <div>
-                <a href="#" class="btn btn-outline-light">Выйти</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light">Выйти</a>
             </div>
         {% else %}
             <div class="d-flex flex-row">
@@ -26,7 +26,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#">Участнику</a></li>
-                        <li><a class="dropdown-item" href="#">Организатору</a></li>
+                        <li><a class="dropdown-item" href="{% url 'organizer-registration' %}">Организатору</a></li>
                         <li><a class="dropdown-item" href="#">Судье</a></li>
                     </ul>
                 </div>

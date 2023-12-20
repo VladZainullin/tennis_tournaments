@@ -21,6 +21,16 @@ def home_view(request):
     return render(request, 'home.html', context)
 
 
+def organizer_tournaments_view(request, organizer_id: int):
+    tournaments = Tournament.objects.filter(organizer_id = organizer_id).all()
+
+    context = {
+        'tournaments': tournaments
+    }
+
+    return render(request, 'organizer_tournaments.html', context)
+
+
 @transaction.atomic
 def login_view(request):
     if request.method == 'GET':

@@ -1,6 +1,5 @@
 from django.contrib.auth import logout, login
 from django.shortcuts import render, redirect
-from django.views import View
 
 from tournaments.forms import OrganizerRegistrationForm
 from tournaments.models import CustomUser, Organizer
@@ -8,7 +7,7 @@ from tournaments.models import CustomUser, Organizer
 
 def logout_view(request):
     logout(request)
-    return redirect('')
+    return redirect(home_view)
 
 
 def home_view(request):

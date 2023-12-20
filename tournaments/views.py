@@ -15,6 +15,7 @@ def home_view(request):
     return render(request, 'home.html')
 
 
+@transaction.atomic
 def login_view(request):
     if request.method == 'GET':
         form = LoginForm()

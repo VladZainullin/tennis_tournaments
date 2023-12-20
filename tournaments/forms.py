@@ -13,6 +13,30 @@ class OrganizerRegistrationForm(forms.ModelForm):
         fields = ['title', 'email', 'password', 'passwordConfirm']
 
 
+class PlayerRegistrationForm(forms.Form):
+    name = forms.CharField(max_length=50, label='Имя')
+    surname = forms.CharField(max_length=50, label='Фамилия')
+    patronymic = forms.CharField(max_length=50, label='Отчество')
+    email = forms.EmailField(max_length=256, label='Email')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
+    passwordConfirm = forms.CharField(widget=forms.PasswordInput(), label='Пароль повторно')
+
+    class Meta:
+        fields = ['name', 'surname', 'patronymic', 'email', 'password', 'passwordConfirm']
+
+
+class RefereeRegistrationForm(forms.Form):
+    name = forms.CharField(max_length=50, label='Имя')
+    surname = forms.CharField(max_length=50, label='Фамилия')
+    patronymic = forms.CharField(max_length=50, label='Отчество')
+    email = forms.EmailField(max_length=256, label='Email')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')
+    passwordConfirm = forms.CharField(widget=forms.PasswordInput(), label='Пароль повторно')
+
+    class Meta:
+        fields = ['name', 'surname', 'patronymic', 'email', 'password', 'passwordConfirm']
+
+
 class LoginForm(forms.Form):
     email = forms.CharField(max_length=50, label='Наименование')
     password = forms.CharField(widget=forms.PasswordInput(), label='Пароль')

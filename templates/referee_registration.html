@@ -1,0 +1,71 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="post" action="{% url 'referee-registration' %}" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="id_name">Имя:</label>
+                        <input type="text" name="name" id="id_name" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите имя.
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="id_surname">Фамилия:</label>
+                        <input type="text" name="surname" id="id_surname" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите фамилию.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_patronymic">Отчество:</label>
+                        <input type="text" name="patronymic" id="id_patronymic" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите отчество.
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="id_email">Электронная почта:</label>
+                        <input type="email" name="email" id="id_email" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите электронную почту.
+                        </div>
+                    </div>
+
+                    <!-- Пароль -->
+                    <div class="form-group">
+                        <label for="id_password">Пароль:</label>
+                        <input type="password" name="password" id="id_password" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите пароль.
+                        </div>
+                    </div>
+
+                    <!-- Повторите пароль -->
+                    <div class="form-group">
+                        <label for="id_passwordConfirm">Повторите пароль:</label>
+                        <input type="password" name="passwordConfirm" id="id_passwordConfirm" class="form-control"
+                               required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, повторите пароль.
+                        </div>
+                    </div>
+
+                    <!-- Кнопка для отправки формы -->
+                    <button type="submit" class="btn btn-dark mt-3">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

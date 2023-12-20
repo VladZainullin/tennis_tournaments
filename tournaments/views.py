@@ -2,8 +2,8 @@ from django.contrib.auth import logout, login, authenticate
 from django.db import transaction
 from django.shortcuts import render, redirect
 
-from tournaments.forms import OrganizerRegistrationForm, LoginForm
-from tournaments.models import CustomUser, Organizer
+from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm
+from tournaments.models import CustomUser, Organizer, Player, Referee
 
 
 def logout_view(request):
@@ -59,3 +59,63 @@ def organizer_registration_view(request):
             return render(request, 'home.html')
 
         return render(request, 'login.html', {'form': form})
+
+
+@transaction.atomic
+def player_registration_view(request):
+    if request.method == 'GET':
+        return render(request, 'player_registration.html')
+
+    if request.method == 'POST':
+        form = PlayerRegistrationForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
+            patronymic = form.cleaned_data['patronymic']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            user = CustomUser.objects.create_user(email=email, password=password)
+
+            organizer = Player.objects.create(
+                name=name,
+                surname=surname,
+                patronymic=patronymic,
+                user=user)
+
+            organizer.save()
+
+            login(request, user)
+            return render(request, 'home.html')
+
+        return render(request, 'login.html')
+
+
+@transaction.atomic
+def referee_registration_view(request):
+    if request.method == 'GET':
+        return render(request, 'referee_registration.html')
+
+    if request.method == 'POST':
+        form = RefereeRegistrationForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
+            patronymic = form.cleaned_data['patronymic']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            user = CustomUser.objects.create_user(email=email, password=password)
+
+            organizer = Referee.objects.create(
+                name=name,
+                surname=surname,
+                patronymic=patronymic,
+                user=user)
+
+            organizer.save()
+
+            login(request, user)
+            return render(request, 'home.html')
+
+        return render(request, 'login.html')

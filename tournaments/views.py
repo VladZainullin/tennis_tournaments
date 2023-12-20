@@ -1,8 +1,9 @@
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.shortcuts import render, redirect
 from django.views import View
 
 from tournaments.forms import OrganizerRegistrationForm
+from tournaments.models import CustomUser, Organizer
 
 
 def logout_view(request):
@@ -21,8 +22,17 @@ def organizer_registration_view(request):
 
     if request.method == 'POST':
         form = OrganizerRegistrationForm(request.POST)
-        if form.is_valid:
-            user = form.save(commit=False)
-            return render(request, 'home.html', {'form': form})
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            user = CustomUser.objects.create_user(email=email, password=password)
+
+            organizer = Organizer.objects.create(title=title, user=user)
+            organizer.save()
+
+            login(request, user)
+            return render(request, 'home.html')
 
         return render(request, 'organizer_registration.html', {'form': form})

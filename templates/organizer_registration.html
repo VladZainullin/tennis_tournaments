@@ -7,19 +7,29 @@
             <div class="col-md-6">
                 <form method="post" action="{% url 'organizer-registration' %}" class="needs-validation" novalidate>
                     {% csrf_token %}
-                    <!-- Имя пользователя -->
+
+                    <!-- Email -->
                     <div class="form-group">
-                        <label for="id_username">Имя пользователя:</label>
-                        <input type="text" name="username" id="id_username" class="form-control" required>
+                        <label for="id_title">Наименование организатора:</label>
+                        <input type="text" name="title" id="id_title" class="form-control" required>
                         <div class="invalid-feedback">
-                            Пожалуйста, введите имя пользователя.
+                            Пожалуйста, введите наименование организатора.
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="id_email">Электронная почта:</label>
+                        <input type="email" name="email" id="id_email" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Пожалуйста, введите электронную почту.
                         </div>
                     </div>
 
                     <!-- Пароль -->
                     <div class="form-group">
-                        <label for="id_password1">Пароль:</label>
-                        <input type="password" name="password1" id="id_password1" class="form-control" required>
+                        <label for="id_password">Пароль:</label>
+                        <input type="password" name="password" id="id_password" class="form-control" required>
                         <div class="invalid-feedback">
                             Пожалуйста, введите пароль.
                         </div>
@@ -27,8 +37,8 @@
 
                     <!-- Повторите пароль -->
                     <div class="form-group">
-                        <label for="id_password2">Повторите пароль:</label>
-                        <input type="password" name="password2" id="id_password2" class="form-control"
+                        <label for="id_passwordConfirm">Повторите пароль:</label>
+                        <input type="password" name="passwordConfirm" id="id_passwordConfirm" class="form-control"
                                required>
                         <div class="invalid-feedback">
                             Пожалуйста, повторите пароль.

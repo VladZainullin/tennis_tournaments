@@ -3,7 +3,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 
 from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm
-from tournaments.models import CustomUser, Organizer, Player, Referee
+from tournaments.models import CustomUser, Organizer, Player, Referee, Tournament
 
 
 def logout_view(request):
@@ -12,7 +12,13 @@ def logout_view(request):
 
 
 def home_view(request):
-    return render(request, 'home.html')
+    tournaments = Tournament.objects.all()
+
+    context = {
+        'tournaments': tournaments
+    }
+
+    return render(request, 'home.html', context)
 
 
 @transaction.atomic

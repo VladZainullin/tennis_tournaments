@@ -61,6 +61,22 @@ class Tournament(models.Model):
         verbose_name_plural = 'Турниры'
 
 
+class TournamentImage(models.Model):
+    content = models.ImageField(upload_to='images/%Y/%m/%d')
+    book: Tournament = models.ForeignKey(
+        to=Tournament,
+        verbose_name='Турнир',
+        on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.content)
+
+    class Meta:
+        db_table = 'images'
+        verbose_name = 'Изображение'
+        verbose_name_plural = 'Изображения'
+
+
 class Player(models.Model):
     user: CustomUser = models.OneToOneField(
         to=CustomUser,

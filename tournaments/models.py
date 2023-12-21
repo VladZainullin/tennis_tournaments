@@ -182,7 +182,7 @@ class Game(models.Model):
     tournament_referee: TournamentReferee = models.ForeignKey(
         to=TournamentReferee,
         verbose_name="Судья партии",
-        on_delete=models.CASCADE),
+        on_delete=models.CASCADE)
     first_player: Player = models.ForeignKey(
         to=Player,
         verbose_name='Первый игрок',

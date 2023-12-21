@@ -1,10 +1,13 @@
+import random
+
 from django.contrib.auth import logout, login, authenticate
 from django.db import transaction
 from django.shortcuts import render, redirect
 
 from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm, \
     CreateTournamentForm
-from tournaments.models import CustomUser, Organizer, Player, Referee, Tournament, TournamentPlayer, TournamentReferee
+from tournaments.models import CustomUser, Organizer, Player, Referee, Tournament, TournamentPlayer, TournamentReferee, \
+    Game
 
 
 def logout_view(request):
@@ -32,7 +35,7 @@ def home_view(request):
         return render(request, 'home.html', context)
 
     if request.user.referee:
-        tournaments_without_referee = Tournament.objects.exclude(tournamentplayer__player_id=request.user.referee_id)
+        tournaments_without_referee = Tournament.objects.exclude(tournamentreferee__referee_id=request.user.referee_id)
 
         context = {
             'tournaments': tournaments_without_referee
@@ -212,26 +215,76 @@ def create_tournament_view(request, organizer_id: int):
 
 @transaction.atomic
 def join_tournament_view(request, tournament_id: int):
-    if request.user.player:
-        tournament = Tournament.objects.get(id=tournament_id)
-        player = request.user.player
+    if request.user.player is not None:
+        current_player = request.user.player
 
-        if TournamentPlayer.objects.filter(tournament=tournament, player=player).exists():
+        tournament = Tournament.objects.get(id=tournament_id)
+
+        exists = TournamentPlayer.objects.filter(tournament=tournament, player=current_player).exists()
+        if exists:
             return render(request, 'home.html')
 
-        tournament_player = TournamentPlayer(tournament=tournament, player=player)
+        tournament_player = TournamentPlayer(tournament=tournament, player=current_player)
         tournament_player.save()
+
+        tournament_referees = TournamentReferee.objects.filter(tournament=tournament)
+
+        games = []
+
+        if TournamentPlayer.objects.filter(tournament=tournament).count() == tournament.player_count and TournamentReferee.objects.filter(tournament=tournament).count() == tournament.player_count:
+            for first_tournament_referee in TournamentPlayer.objects.filter(tournament=tournament, player=current_player):
+                first_player = first_tournament_referee.player
+
+                for second_tournament_player in TournamentPlayer.objects.filter(tournament=tournament, player=current_player).exclude(player__name=first_player):
+                    second_player = second_tournament_player.player
+
+                    random_tournament_referee = random.choice(tournament_referees)
+
+                    game = Game(
+                        tournament=tournament,
+                        tournament_referee=random_tournament_referee,
+                        first_player=first_player,
+                        second_player=second_player)
+
+                    games.append(game)
+
+        Game.objects.bulk_create(games)
+
         return render(request, 'home.html')
 
-    if request.user.referee:
-        tournament = Tournament.objects.get(tournament_id)
-        referee = request.user.referee
+    if request.user.referee is not None:
+        tournament = Tournament.objects.get(id=tournament_id)
+        current_referee = request.user.referee
 
-        if TournamentReferee.objects.filter(tournament=tournament, referee=referee).exists():
+        if TournamentReferee.objects.filter(tournament=tournament, referee=current_referee).exists():
             return render(request, 'home.html')
 
-        tournament_referee = TournamentReferee(tournament=tournament, referee=referee)
+        tournament_referee = TournamentReferee(tournament=tournament, referee=current_referee)
         tournament_referee.save()
+
+        tournament_referees = TournamentReferee.objects.filter(tournament=tournament).all()
+
+        games = []
+
+        if TournamentReferee.objects.filter(tournament=tournament).count() == tournament.referee_count and TournamentPlayer.objects.filter(tournament=tournament).count() == tournament.player_count:
+            for first_tournament_player in TournamentPlayer.objects.filter(tournament=tournament):
+                first_player = first_tournament_player.player
+
+                for second_tournament_player in TournamentPlayer.objects.filter(tournament=tournament).exclude(player__name=first_player):
+                    second_player = second_tournament_player.player
+
+                    random_tournament_referee = random.choice(tournament_referees)
+
+                    game = Game(
+                        tournament=tournament,
+                        tournament_referee=random_tournament_referee,
+                        first_player=first_player,
+                        second_player=second_player)
+
+                    games.append(game)
+
+        Game.objects.bulk_create(games)
+
         return render(request, 'home.html')
 
     return render(request, 'home.html')

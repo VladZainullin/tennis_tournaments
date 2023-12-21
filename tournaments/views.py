@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm, \
     CreateTournamentForm
-from tournaments.models import CustomUser, Organizer, Player, Referee, Tournament
+from tournaments.models import CustomUser, Organizer, Player, Referee, Tournament, TournamentPlayer, TournamentReferee
 
 
 def logout_view(request):
@@ -184,6 +184,7 @@ def referee_registration_view(request):
         return render(request, 'login.html')
 
 
+@transaction.atomic
 def create_tournament_view(request, organizer_id: int):
     if request.method == 'POST':
         form = CreateTournamentForm(request.POST)
@@ -207,3 +208,33 @@ def create_tournament_view(request, organizer_id: int):
             return render(request, 'my_tournaments.html')
 
     return render(request, 'create_tournament.html')
+
+
+@transaction.atomic
+def join_tournament_view(request, tournament_id: int):
+    if request.user.organizer:
+        return render(request, 'home.html')
+
+    if request.user.player:
+        tournament = Tournament.objects.get(id=tournament_id)
+        player = request.user.player
+
+        if TournamentPlayer.objects.filter(tournament=tournament, player=player).exists():
+            return render(request, 'home.html')
+
+        tournament_player = TournamentPlayer(tournament=tournament, player=player)
+        tournament_player.save()
+        return render(request, 'home.html')
+
+    if request.user.referee:
+        tournament = Tournament.objects.get(tournament_id)
+        referee = request.user.referee
+
+        if TournamentReferee.objects.filter(tournament=tournament, referee=referee).exists():
+            return render(request, 'home.html')
+
+        tournament_referee = TournamentReferee(tournament=tournament, referee=referee)
+        tournament_referee.save()
+        return render(request, 'home.html')
+
+    return render(request, 'home.html')

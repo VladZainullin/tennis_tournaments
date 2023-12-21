@@ -13,9 +13,9 @@
                 {% endif %}
             </ul>
             <ul class="navbar-nav">
-                {% if user.organizer is not None %}
+                {% if not user.is_anonymous %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'organizer-tournaments' user.organizer.id %}">Мои турниры</a>
+                        <a class="nav-link" href="{% url 'my-tournaments' %}">Мои турниры</a>
                     </li>
                 {% endif %}
             </ul>

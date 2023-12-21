@@ -8,7 +8,7 @@ urlpatterns = [
     path('organizer-registration', organizer_registration_view, name='organizer-registration'),
     path('player-registration', player_registration_view, name='player-registration'),
     path('referee-registration', referee_registration_view, name='referee-registration'),
-    path('organizer-tournaments/<int:organizer_id>', organizer_tournaments_view, name='organizer-tournaments'),
+    path('my-tournaments', my_tournaments_view, name='my-tournaments'),
     path('login', login_view, name='login'),
     path('create-tournament/<int:organizer_id>', create_tournament_view, name='create-tournament'),
 ]

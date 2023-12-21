@@ -3,7 +3,9 @@
 
 {% block content %}
     <div class="m-3">
-        <a class="btn btn-success" href="{% url 'create-tournament' user.organizer.id %}">Организовать турнир</a>
+        {% if user.organizer %}
+            <a class="btn btn-success" href="{% url 'create-tournament' user.organizer.id %}">Организовать турнир</a>
+        {% endif %}
         <div class="row row-cols-1 row-cols-md-4 g-4">
             {% for tournament in tournaments %}
                 <div class="col">

@@ -50,14 +50,33 @@ def home_view(request):
         return render(request, 'home.html', context)
 
 
-def organizer_tournaments_view(request, organizer_id: int):
-    tournaments = Tournament.objects.filter(organizer_id=organizer_id).all()
+def my_tournaments_view(request):
+    if request.user.organizer:
+        tournaments = Tournament.objects.filter(organizer_id=request.user.organizer_id).all()
 
-    context = {
-        'tournaments': tournaments
-    }
+        context = {
+            'tournaments': tournaments
+        }
 
-    return render(request, 'organizer_tournaments.html', context)
+        return render(request, 'my_tournaments.html', context)
+
+    if request.user.player:
+        tournaments = Tournament.objects.filter(tournamentplayer__player_id=request.user.player_id)
+
+        context = {
+            'tournaments': tournaments
+        }
+
+        return render(request, 'my_tournaments.html', context)
+
+    if request.user.referee:
+        tournaments = Tournament.objects.filter(tournamentreferee__referee_id=request.user.referee_id)
+
+        context = {
+            'tournaments': tournaments
+        }
+
+        return render(request, 'my_tournaments.html', context)
 
 
 @transaction.atomic
@@ -77,7 +96,7 @@ def login_view(request):
                 return render(request, 'login.html', {'form': form})
 
             login(request, user)
-            return render(request, 'home.html')
+            return redirect(home_view)
 
     return render(request, 'login.html')
 
@@ -185,6 +204,6 @@ def create_tournament_view(request, organizer_id: int):
 
             tournament.save()
 
-            return render(request, 'organizer_tournaments.html')
+            return render(request, 'my_tournaments.html')
 
     return render(request, 'create_tournament.html')

@@ -13,13 +13,41 @@ def logout_view(request):
 
 
 def home_view(request):
-    tournaments = Tournament.objects.all()
+    if request.user.is_anonymous:
+        tournaments = Tournament.objects.all()
 
-    context = {
-        'tournaments': tournaments
-    }
+        context = {
+            'tournaments': tournaments
+        }
 
-    return render(request, 'home.html', context)
+        return render(request, 'home.html', context)
+
+    if request.user.player:
+        tournaments_without_player = Tournament.objects.exclude(tournamentplayer__player_id=request.user.player_id)
+
+        context = {
+            'tournaments': tournaments_without_player
+        }
+
+        return render(request, 'home.html', context)
+
+    if request.user.referee:
+        tournaments_without_referee = Tournament.objects.exclude(tournamentplayer__player_id=request.user.referee_id)
+
+        context = {
+            'tournaments': tournaments_without_referee
+        }
+
+        return render(request, 'home.html', context)
+
+    if request.user.organizer:
+        tournaments_without_organizer = Tournament.objects.exclude(tournamentplayer__player_id=request.user.organizer_id)
+
+        context = {
+            'tournaments': tournaments_without_organizer
+        }
+
+        return render(request, 'home.html', context)
 
 
 def organizer_tournaments_view(request, organizer_id: int):

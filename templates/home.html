@@ -9,11 +9,11 @@
                     <div class="card">
                         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                {% for image in tournament.tournamentimage_set.all %}
-                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                        <img src="{{ image.content.url }}" class="d-block w-100">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item {% if tournament.image %}active{% endif %}">
+                                        <img src="{{ tournament.image.url }}" class="d-block w-100">
                                     </div>
-                                {% endfor %}
+                                </div>
                             </div>
                             <button class="carousel-control-prev" type="button"
                                     data-bs-target="#carouselExampleControls"

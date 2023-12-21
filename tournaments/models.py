@@ -67,6 +67,11 @@ class Tournament(models.Model):
         to=Organizer,
         on_delete=models.CASCADE,
         verbose_name='Организатор')
+    image = models.ImageField(
+        upload_to='images/%Y/%m/%d',
+        verbose_name='Изображение')
+    player_count = models.IntegerField(verbose_name='Кол-во игроков')
+    referee_count = models.IntegerField(verbose_name='Кол-во судей')
 
     def __str__(self):
         return self.title
@@ -75,22 +80,6 @@ class Tournament(models.Model):
         db_table = 'tournament'
         verbose_name = 'Турнир',
         verbose_name_plural = 'Турниры'
-
-
-class TournamentImage(models.Model):
-    content = models.ImageField(upload_to='images/%Y/%m/%d')
-    book: Tournament = models.ForeignKey(
-        to=Tournament,
-        verbose_name='Турнир',
-        on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.content)
-
-    class Meta:
-        db_table = 'images'
-        verbose_name = 'Изображение'
-        verbose_name_plural = 'Изображения'
 
 
 class Player(models.Model):

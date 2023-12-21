@@ -3,17 +3,16 @@
 
 {% block content %}
     <div class="m-3">
+        <a class="btn btn-success" href="{% url 'create-tournament' user.organizer.id %}">Организовать турнир</a>
         <div class="row row-cols-1 row-cols-md-4 g-4">
             {% for tournament in tournaments %}
                 <div class="col">
                     <div class="card">
                         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                {% for image in tournament.tournamentimage_set.all %}
-                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                        <img src="{{ image.content.url }}" class="d-block w-100">
-                                    </div>
-                                {% endfor %}
+                                <div class="carousel-item {% if tournament.image %}active{% endif %}">
+                                    <img src="{{ tournament.image.url }}" class="d-block w-100">
+                                </div>
                             </div>
                             <button class="carousel-control-prev" type="button"
                                     data-bs-target="#carouselExampleControls"

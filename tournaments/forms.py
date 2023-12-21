@@ -1,5 +1,5 @@
 from django import forms
-from .models import Organizer, CustomUser
+from .models import Organizer
 
 
 class OrganizerRegistrationForm(forms.ModelForm):
@@ -43,3 +43,18 @@ class LoginForm(forms.Form):
 
     class Meta:
         fields = ['email', 'password']
+
+
+class CreateTournamentForm(forms.Form):
+    title = forms.CharField(
+        max_length=50,
+        label='Наименование турнира')
+    description = forms.CharField(
+        max_length=1000,
+        label='Наименование турнира')
+    player_count = forms.IntegerField(
+        min_value=1,
+        label='Кол-во участников')
+    referee_count = forms.IntegerField(
+        min_value=1,
+        label='Кол-во судей')

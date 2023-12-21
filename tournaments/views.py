@@ -2,7 +2,8 @@ from django.contrib.auth import logout, login, authenticate
 from django.db import transaction
 from django.shortcuts import render, redirect
 
-from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm
+from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm, \
+    CreateTournamentForm
 from tournaments.models import CustomUser, Organizer, Player, Referee, Tournament
 
 
@@ -22,7 +23,7 @@ def home_view(request):
 
 
 def organizer_tournaments_view(request, organizer_id: int):
-    tournaments = Tournament.objects.filter(organizer_id = organizer_id).all()
+    tournaments = Tournament.objects.filter(organizer_id=organizer_id).all()
 
     context = {
         'tournaments': tournaments
@@ -134,3 +135,28 @@ def referee_registration_view(request):
             return render(request, 'home.html')
 
         return render(request, 'login.html')
+
+
+def create_tournament_view(request, organizer_id: int):
+    if request.method == 'POST':
+        form = CreateTournamentForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            player_count = form.cleaned_data['player_count']
+            referee_count = form.cleaned_data['referee_count']
+            image = request.FILES.get('image')
+
+            tournament = Tournament(
+                title=title,
+                description=description,
+                player_count=player_count,
+                referee_count=referee_count,
+                organizer_id=organizer_id,
+                image=image)
+
+            tournament.save()
+
+            return render(request, 'organizer_tournaments.html')
+
+    return render(request, 'create_tournament.html')

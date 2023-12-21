@@ -256,3 +256,17 @@ def leave_tournament_view(request, tournament_id: int):
         return redirect(my_tournaments_view)
 
     return redirect(my_tournaments_view)
+
+
+def tournament_detail_view(request, tournament_id: int):
+    tournament = Tournament.objects.get(id=tournament_id)
+    players = Player.objects.filter(tournamentplayer__tournament_id=tournament_id)
+    referee = Referee.objects.filter(tournamentreferee__tournament_id=tournament_id)
+
+    context = {
+        'tournament': tournament,
+        'players': players,
+        'referees': referee
+    }
+
+    return render(request, 'tournament-detail.html', context)

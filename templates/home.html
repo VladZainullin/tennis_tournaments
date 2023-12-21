@@ -31,7 +31,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ tournament.title }}</h5>
                             <p class="card-text">{{ tournament.description }}</p>
-                            <a href="#" class="btn btn-dark">Подробнее</a>
+                            <a href="{% url 'tournament-detail' tournament.id %}" class="btn btn-dark">Подробнее</a>
                             {% if user.referee is not None or user.player is not None %}
                                 <a href="{% url 'join-tournament' tournament.id %}" class="btn btn-outline-dark">Присоединиться</a>
                             {% endif %}

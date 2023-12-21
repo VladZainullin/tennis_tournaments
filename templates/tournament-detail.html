@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container m-3">
+        <div class="row">
+            <div class="col">
+                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item {% if tournament.image %}active{% endif %}">
+                            <img src="{{ tournament.image.url }}" class="img-fluid img-thumbnail">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button"
+                            data-bs-target="#carouselExampleControls"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button"
+                            data-bs-target="#carouselExampleControls"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col">
+                <h1>{{ tournament.title }}</h1>
+                <h5>О турнире</h5>
+                <p>{{ tournament.description }}</p>
+                <h5>Статус</h5>
+                <p>{{ tournament.status }}</p>
+                <h5>Дата начала</h5>
+                <p>{{ tournament.date_of_start }}</p>
+                <h5>Кол-во игроков</h5>
+                <p>{{ tournament.player_count }} / {{ players.count }}</p>
+                <h5>Кол-во судей</h5>
+                <p>{{ tournament.player_count }} / {{ referees.count }}</p>
+                <div class="row">
+                    {% if players.count != 0 %}
+                        <div class="col">
+                            <h4>Участники:</h4>
+                            {% for player in players %}
+                                <p>{{ player }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if referees.count != 0 %}
+                        <div class="col">
+                            <h4>Судьи:</h4>
+                            {% for referee in referees %}
+                                <p>{{ referee }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

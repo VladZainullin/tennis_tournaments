@@ -57,6 +57,11 @@ class Organizer(models.Model):
 
 
 class Tournament(models.Model):
+    class Status(models.TextChoices):
+        NoStart = "Не начат"
+        Processing = "Идёт"
+        Сompleted = "Завершён"
+
     title = models.CharField(
         max_length=50,
         verbose_name='Наименование')
@@ -70,6 +75,15 @@ class Tournament(models.Model):
     image = models.ImageField(
         upload_to='images/%Y/%m/%d',
         verbose_name='Изображение')
+    date_of_start = models.DateTimeField(
+        verbose_name='Дата начала турнира',
+        auto_now_add=True)
+    status = models.CharField(
+        max_length=50,
+        choices=Status.choices,
+        default=Status.NoStart,
+        verbose_name='Статус')
+
     player_count = models.IntegerField(verbose_name='Кол-во игроков')
     referee_count = models.IntegerField(verbose_name='Кол-во судей')
 
@@ -83,7 +97,6 @@ class Tournament(models.Model):
 
 
 class Player(models.Model):
-
     name: str = models.CharField(
         max_length=50,
         verbose_name='Имя')
@@ -123,7 +136,6 @@ class TournamentPlayer(models.Model):
 
 
 class Referee(models.Model):
-
     name: str = models.CharField(
         max_length=50,
         verbose_name='Имя')

@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import User, AbstractUser, PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 from tournaments.custom_user_manager import CustomUserManager
@@ -10,6 +10,27 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
+    referee = models.OneToOneField(
+        to='Referee',
+        related_name='referee',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE)
+
+    organizer = models.OneToOneField(
+        to='Organizer',
+        related_name='organizer',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE)
+
+    player = models.OneToOneField(
+        to='Player',
+        related_name='player',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
 
@@ -25,11 +46,6 @@ class Organizer(models.Model):
     title: str = models.CharField(
         max_length=50,
         verbose_name='Наименование')
-
-    user: CustomUser = models.OneToOneField(
-        to=CustomUser,
-        related_name='organizer',
-        on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -78,10 +94,6 @@ class TournamentImage(models.Model):
 
 
 class Player(models.Model):
-    user: CustomUser = models.OneToOneField(
-        to=CustomUser,
-        related_name='player',
-        on_delete=models.CASCADE)
 
     name: str = models.CharField(
         max_length=50,
@@ -122,10 +134,6 @@ class TournamentPlayer(models.Model):
 
 
 class Referee(models.Model):
-    user: CustomUser = models.OneToOneField(
-        to=CustomUser,
-        related_name='referee',
-        on_delete=models.CASCADE)
 
     name: str = models.CharField(
         max_length=50,

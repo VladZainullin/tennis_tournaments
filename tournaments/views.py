@@ -66,9 +66,10 @@ def organizer_registration_view(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            user = CustomUser.objects.create_user(email=email, password=password)
+            organizer = Organizer.objects.create(title=title)
 
-            organizer = Organizer.objects.create(title=title, user=user)
+            user = CustomUser.objects.create_user(email=email, password=password, organizer=organizer)
+
             organizer.save()
 
             login(request, user)
@@ -91,15 +92,14 @@ def player_registration_view(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            user = CustomUser.objects.create_user(email=email, password=password)
-
-            organizer = Player.objects.create(
+            player = Player.objects.create(
                 name=name,
                 surname=surname,
-                patronymic=patronymic,
-                user=user)
+                patronymic=patronymic)
 
-            organizer.save()
+            user = CustomUser.objects.create_user(email=email, password=password, player=player)
+
+            player.save()
 
             login(request, user)
             return render(request, 'home.html')
@@ -121,15 +121,14 @@ def referee_registration_view(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            user = CustomUser.objects.create_user(email=email, password=password)
-
-            organizer = Referee.objects.create(
+            referee = Referee.objects.create(
                 name=name,
                 surname=surname,
-                patronymic=patronymic,
-                user=user)
+                patronymic=patronymic)
 
-            organizer.save()
+            user = CustomUser.objects.create_user(email=email, password=password, referee=referee)
+
+            referee.save()
 
             login(request, user)
             return render(request, 'home.html')

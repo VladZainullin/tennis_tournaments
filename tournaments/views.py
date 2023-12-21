@@ -212,9 +212,6 @@ def create_tournament_view(request, organizer_id: int):
 
 @transaction.atomic
 def join_tournament_view(request, tournament_id: int):
-    if request.user.organizer:
-        return render(request, 'home.html')
-
     if request.user.player:
         tournament = Tournament.objects.get(id=tournament_id)
         player = request.user.player
@@ -238,3 +235,24 @@ def join_tournament_view(request, tournament_id: int):
         return render(request, 'home.html')
 
     return render(request, 'home.html')
+
+
+@transaction.atomic
+def leave_tournament_view(request, tournament_id: int):
+    if request.user.player:
+        player = request.user.player
+
+        tournament_player = TournamentPlayer.objects.get(tournament_id=tournament_id, player=player)
+
+        tournament_player.delete()
+        return redirect(my_tournaments_view)
+
+    if request.user.referee:
+        referee = request.user.referee
+
+        tournament_referee = TournamentReferee.objects.get(tournament_id=tournament_id, referee=referee)
+
+        tournament_referee.delete()
+        return redirect(my_tournaments_view)
+
+    return redirect(my_tournaments_view)

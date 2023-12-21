@@ -33,6 +33,11 @@
                             <h5 class="card-title">{{ tournament.title }}</h5>
                             <p class="card-text">{{ tournament.description }}</p>
                             <a href="#" class="btn btn-dark">Подробнее</a>
+                            {% if user.player is not None or user.referee is not None %}
+                                <a href="{% url 'leave-tournament' tournament.id %}" class="btn btn-outline-danger">
+                                    Покинуть
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

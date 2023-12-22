@@ -107,6 +107,9 @@ class Player(models.Model):
         max_length=50,
         verbose_name='Отчество')
 
+    def get_short_name(self):
+        return self.surname + ' ' + self.name[0] + '. ' + self.patronymic[0] + '.'
+
     def __str__(self):
         return self.surname + ' ' + self.name + ' ' + self.patronymic
 
@@ -193,6 +196,9 @@ class Game(models.Model):
         verbose_name='Второй игрок',
         related_name='second_player',
         on_delete=models.CASCADE)
+    score: int = models.IntegerField(
+        verbose_name='Счёт',
+        null=True)
 
     def __str__(self):
         return 'Партия между ' + self.first_player + ' и ' + self.second_player

@@ -270,7 +270,9 @@ def join_tournament_view(request, tournament_id: int):
             for first_tournament_player in TournamentPlayer.objects.filter(tournament=tournament):
                 first_player = first_tournament_player.player
 
-                for second_tournament_player in TournamentPlayer.objects.filter(tournament=tournament).exclude(player__name=first_player):
+                for second_tournament_player in TournamentPlayer.objects\
+                        .filter(tournament=tournament)\
+                        .exclude(player__name=first_player):
                     second_player = second_tournament_player.player
 
                     random_tournament_referee = random.choice(tournament_referees)
@@ -313,13 +315,24 @@ def leave_tournament_view(request, tournament_id: int):
 
 def tournament_detail_view(request, tournament_id: int):
     tournament = Tournament.objects.get(id=tournament_id)
-    players = Player.objects.filter(tournamentplayer__tournament_id=tournament_id)
-    referee = Referee.objects.filter(tournamentreferee__tournament_id=tournament_id)
+
+    players = Player.objects\
+        .filter(tournamentplayer__tournament_id=tournament_id)\
+        .order_by('surname', 'name', 'patronymic')
+
+    referee = Referee.objects\
+        .filter(tournamentreferee__tournament_id=tournament_id)\
+        .order_by('surname', 'name', 'patronymic')
+
+    games = Game.objects\
+        .filter(tournament=tournament)\
+        .order_by('first_player__surname', 'first_player__name', 'first_player__patronymic', 'second_player__surname', 'second_player__name', 'second_player__patronymic')\
 
     context = {
         'tournament': tournament,
         'players': players,
-        'referees': referee
+        'referees': referee,
+        'games': games
     }
 
     return render(request, 'tournament-detail.html', context)

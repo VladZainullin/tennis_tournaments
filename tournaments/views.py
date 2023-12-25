@@ -106,7 +106,7 @@ def login_view(request):
 
 
 @transaction.atomic
-def mark_winner(request, game_id: int):
+def mark_winner_view(request, game_id: int):
     game = Game.objects.get(id=game_id)
     game.score = 1
     game.save()
@@ -260,7 +260,7 @@ def join_tournament_view(request, tournament_id: int):
 
 
 @transaction.atomic
-def start_tournament(request, tournament_id: int):
+def start_tournament_view(request, tournament_id: int):
     if request.user.organizer is None:
         return redirect(home_view)
 
@@ -342,3 +342,15 @@ def tournament_detail_view(request, tournament_id: int):
     Tournament.Status.NoStart
 
     return render(request, 'tournament-detail.html', context)
+
+
+@transaction.atomic
+def completed_tournament_view(request, tournament_id: int):
+    tournament = Tournament.objects.get(id=tournament_id)
+    if tournament.state != Tournament.Status.Processing:
+        return render(my_tournaments_view)
+
+    tournament.status = Tournament.Status.Сompleted
+    tournament.save()
+
+    return redirect('tournament-detail', tournament_id=tournament_id)

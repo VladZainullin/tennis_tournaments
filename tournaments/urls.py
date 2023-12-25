@@ -14,6 +14,7 @@ urlpatterns = [
     path('join-tournament/<int:tournament_id>', join_tournament_view, name='join-tournament'),
     path('leave-tournament/<int:tournament_id>', leave_tournament_view, name='leave-tournament'),
     path('tournament-detail/<int:tournament_id>', tournament_detail_view, name='tournament-detail'),
-    path('start-tournament/<int:tournament_id>', start_tournament, name='start-tournament'),
-    path('mark-winner/<int:game_id>', mark_winner, name='mark-winner')
+    path('start-tournament/<int:tournament_id>', start_tournament_view, name='start-tournament'),
+    path('mark-winner/<int:game_id>', mark_winner_view, name='mark-winner'),
+    path('completed-tournament/<int:tournament_id>', completed_tournament_view, name='completed-tournament')
 ]

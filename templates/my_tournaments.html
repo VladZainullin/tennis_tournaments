@@ -40,7 +40,13 @@
                             {% endif %}
                             {% if user.organizer is not None and tournament.status == "Не начат" %}
                                 <a href="{% url 'start-tournament' tournament.id %}"
-                                   class="btn btn-outline-dark">Начать</a>
+                                   class="btn btn-outline-dark">Начать
+                                </a>
+                            {% endif %}
+                            {% if user.organizer is not None and tournament.status == "Идёт" %}
+                                <a href="{% url 'completed-tournament' tournament.id %}"
+                                   class="btn btn-outline-dark">Завершить
+                                </a>
                             {% endif %}
                         </div>
                     </div>

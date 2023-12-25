@@ -56,38 +56,40 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="row">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        {% for player in players %}
-                            <th scope="col">{{ player.get_short_name }}</th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for row_player in players %}
+            {% if tournament.status != no_start %}
+                <div class="row">
+                    <table class="table table-bordered">
+                        <thead>
                         <tr>
-                            <th scope="col">{{ row_player.get_short_name }}</th>
-                            {% for column_player in players %}
-                                {% for game in games %}
-                                    {% if game.first_player == column_player and game.second_player == row_player %}
-                                        <td>
-                                            {% if row_player == column_player %}
-                                                -
-                                            {% else %}
-                                                {{ game.score|default_if_none:'' }}
-                                            {% endif %}
-                                        </td>
-                                    {% endif %}
-                                {% endfor %}
+                            <th scope="col"></th>
+                            {% for player in players %}
+                                <th scope="col">{{ player.get_short_name }}</th>
                             {% endfor %}
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                        {% for row_player in players %}
+                            <tr>
+                                <th scope="col">{{ row_player.get_short_name }}</th>
+                                {% for column_player in players %}
+                                    {% for game in games %}
+                                        {% if game.first_player == column_player and game.second_player == row_player %}
+                                            <td>
+                                                {% if row_player == column_player %}
+                                                    -
+                                                {% else %}
+                                                    {{ game.score|default_if_none:'' }}
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -38,6 +38,10 @@
                                     Покинуть
                                 </a>
                             {% endif %}
+                            {% if user.organizer is not None and tournament.status == "Не начат" %}
+                                <a href="{% url 'start-tournament' tournament.id %}"
+                                   class="btn btn-outline-dark">Начать</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

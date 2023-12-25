@@ -227,29 +227,6 @@ def join_tournament_view(request, tournament_id: int):
         tournament_player = TournamentPlayer(tournament=tournament, player=current_player)
         tournament_player.save()
 
-        tournament_referees = TournamentReferee.objects.filter(tournament=tournament)
-
-        games = []
-
-        if TournamentPlayer.objects.filter(tournament=tournament).count() == tournament.player_count and TournamentReferee.objects.filter(tournament=tournament).count() == tournament.player_count:
-            for first_tournament_referee in TournamentPlayer.objects.filter(tournament=tournament, player=current_player):
-                first_player = first_tournament_referee.player
-
-                for second_tournament_player in TournamentPlayer.objects.filter(tournament=tournament, player=current_player).exclude(player__name=first_player):
-                    second_player = second_tournament_player.player
-
-                    random_tournament_referee = random.choice(tournament_referees)
-
-                    game = Game(
-                        tournament=tournament,
-                        tournament_referee=random_tournament_referee,
-                        first_player=first_player,
-                        second_player=second_player)
-
-                    games.append(game)
-
-        Game.objects.bulk_create(games)
-
         return render(request, 'home.html')
 
     if request.user.referee is not None:
@@ -262,34 +239,52 @@ def join_tournament_view(request, tournament_id: int):
         tournament_referee = TournamentReferee(tournament=tournament, referee=current_referee)
         tournament_referee.save()
 
-        tournament_referees = TournamentReferee.objects.filter(tournament=tournament).all()
-
-        games = []
-
-        if TournamentReferee.objects.filter(tournament=tournament).count() == tournament.referee_count and TournamentPlayer.objects.filter(tournament=tournament).count() == tournament.player_count:
-            for first_tournament_player in TournamentPlayer.objects.filter(tournament=tournament):
-                first_player = first_tournament_player.player
-
-                for second_tournament_player in TournamentPlayer.objects\
-                        .filter(tournament=tournament)\
-                        .exclude(player__name=first_player):
-                    second_player = second_tournament_player.player
-
-                    random_tournament_referee = random.choice(tournament_referees)
-
-                    game = Game(
-                        tournament=tournament,
-                        tournament_referee=random_tournament_referee,
-                        first_player=first_player,
-                        second_player=second_player)
-
-                    games.append(game)
-
-        Game.objects.bulk_create(games)
-
         return render(request, 'home.html')
 
     return render(request, 'home.html')
+
+
+@transaction.atomic
+def start_tournament(request, tournament_id: int):
+    if request.user.organizer is None:
+        return redirect(home_view)
+
+    tournament = Tournament.objects.get(id=tournament_id)
+
+    if tournament.status != Tournament.Status.NoStart:
+        return redirect(home_view)
+
+    games = []
+
+    tournament_referees = TournamentReferee.objects.filter(tournament=tournament).all()
+    tournament_players = TournamentPlayer.objects.filter(tournament=tournament)
+
+    valid_players_count = tournament.player_count >= tournament_players.count() >= 2
+    valid_referee_count = tournament.referee_count >= tournament_referees.count() >= 1
+
+    if not valid_players_count or not valid_referee_count:
+        return redirect(my_tournaments_view)
+
+    for first_tournament_referee in tournament_players:
+        first_player = first_tournament_referee.player
+        for second_tournament_player in tournament_players:
+            second_player = second_tournament_player.player
+
+            random_tournament_referee = random.choice(tournament_referees)
+
+            game = Game(
+                tournament=tournament,
+                tournament_referee=random_tournament_referee,
+                first_player=first_player,
+                second_player=second_player)
+
+            games.append(game)
+
+    Game.objects.bulk_create(games)
+    tournament.status = Tournament.Status.Processing
+    tournament.save()
+
+    return redirect(my_tournaments_view)
 
 
 @transaction.atomic
@@ -332,7 +327,10 @@ def tournament_detail_view(request, tournament_id: int):
         'tournament': tournament,
         'players': players,
         'referees': referee,
-        'games': games
+        'games': games,
+        'no_start': Tournament.Status.NoStart
     }
+
+    Tournament.Status.NoStart
 
     return render(request, 'tournament-detail.html', context)

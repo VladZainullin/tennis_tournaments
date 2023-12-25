@@ -44,7 +44,8 @@ def home_view(request):
         return render(request, 'home.html', context)
 
     if request.user.organizer:
-        tournaments_without_organizer = Tournament.objects.exclude(tournamentplayer__player_id=request.user.organizer_id)
+        tournaments_without_organizer = Tournament.objects.exclude(
+            tournamentplayer__player_id=request.user.organizer_id)
 
         context = {
             'tournaments': tournaments_without_organizer
@@ -102,6 +103,20 @@ def login_view(request):
             return redirect(home_view)
 
     return render(request, 'login.html')
+
+
+@transaction.atomic
+def mark_winner(request, game_id: int):
+    game = Game.objects.get(id=game_id)
+    game.score = 1
+    game.save()
+
+    relation_game = Game.objects.get(first_player=game.second_player, second_player=game.first_player)
+    relation_game.score = 0
+
+    relation_game.save()
+
+    return redirect('tournament-detail', tournament_id=game.tournament_id)
 
 
 @transaction.atomic
@@ -311,18 +326,11 @@ def leave_tournament_view(request, tournament_id: int):
 def tournament_detail_view(request, tournament_id: int):
     tournament = Tournament.objects.get(id=tournament_id)
 
-    players = Player.objects\
-        .filter(tournamentplayer__tournament_id=tournament_id)\
-        .order_by('surname', 'name', 'patronymic')
+    players = Player.objects.filter(tournamentplayer__tournament_id=tournament_id).order_by('surname', 'name', 'patronymic')
 
-    referee = Referee.objects\
-        .filter(tournamentreferee__tournament_id=tournament_id)\
-        .order_by('surname', 'name', 'patronymic')
+    referee = Referee.objects.filter(tournamentreferee__tournament_id=tournament_id).order_by('surname', 'name', 'patronymic')
 
-    games = Game.objects\
-        .filter(tournament=tournament)\
-        .order_by('first_player__surname', 'first_player__name', 'first_player__patronymic', 'second_player__surname', 'second_player__name', 'second_player__patronymic')\
-
+    games = Game.objects.filter(tournament=tournament).order_by('first_player__surname', 'first_player__name', 'first_player__patronymic', 'second_player__surname', 'second_player__name', 'second_player__patronymic')
     context = {
         'tournament': tournament,
         'players': players,

@@ -74,11 +74,12 @@
                                 {% for column_player in players %}
                                     {% for game in games %}
                                         {% if game.first_player == column_player and game.second_player == row_player %}
-                                            <td>
+                                            <td {% if row_player != column_player and user.referee %}
+                                                onclick="document.location='{% url 'mark-winner' game.id %}'" {% endif %}>
                                                 {% if row_player == column_player %}
                                                     -
                                                 {% else %}
-                                                    {{ game.score|default_if_none:'' }}
+                                                    {{ game.score|default_if_none:' ' }}
                                                 {% endif %}
                                             </td>
                                         {% endif %}

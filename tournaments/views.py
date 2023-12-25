@@ -1,7 +1,7 @@
 import random
 
 from django.contrib.auth import logout, login, authenticate
-from django.db import transaction
+from django.db import transaction, connection
 from django.shortcuts import render, redirect
 
 from tournaments.forms import OrganizerRegistrationForm, LoginForm, PlayerRegistrationForm, RefereeRegistrationForm, \
@@ -331,15 +331,32 @@ def tournament_detail_view(request, tournament_id: int):
     referee = Referee.objects.filter(tournamentreferee__tournament_id=tournament_id).order_by('surname', 'name', 'patronymic')
 
     games = Game.objects.filter(tournament=tournament).order_by('first_player__surname', 'first_player__name', 'first_player__patronymic', 'second_player__surname', 'second_player__name', 'second_player__patronymic')
+
+    winners = Player.objects.raw(
+        '''
+select row_number() over(order by sum(g.score) desc) as id,
+       p.surname,
+       p.name,
+       p.patronymic
+from players p
+         inner join tournament_players tp on p.id = tp.player_id
+         inner join games g on p.id = g.first_player_id
+group by p.surname,
+         p.name,
+         p.patronymic
+order by sum(g.score) desc
+limit 3
+            '''
+    )
+
     context = {
         'tournament': tournament,
         'players': players,
         'referees': referee,
         'games': games,
-        'no_start': Tournament.Status.NoStart
+        'no_start': Tournament.Status.NoStart,
+        'winners': winners
     }
-
-    Tournament.Status.NoStart
 
     return render(request, 'tournament-detail.html', context)
 
@@ -347,7 +364,7 @@ def tournament_detail_view(request, tournament_id: int):
 @transaction.atomic
 def completed_tournament_view(request, tournament_id: int):
     tournament = Tournament.objects.get(id=tournament_id)
-    if tournament.state != Tournament.Status.Processing:
+    if tournament.status != Tournament.Status.Processing:
         return render(my_tournaments_view)
 
     tournament.status = Tournament.Status.Сompleted

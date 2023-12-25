@@ -26,17 +26,35 @@
                 </div>
             </div>
             <div class="col">
-                <h1>{{ tournament.title }}</h1>
-                <h5>О турнире</h5>
-                <p>{{ tournament.description }}</p>
-                <h5>Статус</h5>
-                <p>{{ tournament.status }}</p>
-                <h5>Дата начала</h5>
-                <p>{{ tournament.date_of_start }}</p>
-                <h5>Кол-во игроков</h5>
-                <p>{{ tournament.player_count }} / {{ players.count }}</p>
-                <h5>Кол-во судей</h5>
-                <p>{{ tournament.referee_count }} / {{ referees.count }}</p>
+                <div class="row">
+                    <div class="col">
+                        <h1>{{ tournament.title }}</h1>
+                        <h5>О турнире</h5>
+                        <p>{{ tournament.description }}</p>
+                        <h5>Статус</h5>
+                        <p>{{ tournament.status }}</p>
+                        <h5>Дата начала</h5>
+                        <p>{{ tournament.date_of_start }}</p>
+                        <h5>Кол-во игроков</h5>
+                        <p>{{ tournament.player_count }} / {{ players.count }}</p>
+                        <h5>Кол-во судей</h5>
+                        <p>{{ tournament.referee_count }} / {{ referees.count }}</p>
+                    </div>
+                    <div class="col">
+                        <div>
+                            {% if tournament.status == "Завершён" %}
+                                <h2>Победители:</h2>
+                                <div>
+                                    {% for winner in winners %}
+                                        <p class="text">
+                                            {{ winner.id }}. {{ winner.surname }} {{ winner.name }} {{ winner.patronymic }}
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     {% if players.count != 0 %}
                         <div class="col">

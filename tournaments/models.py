@@ -150,7 +150,7 @@ class Referee(models.Model):
         verbose_name='Отчество')
 
     def __str__(self):
-        return self.surname + ' ' + self.name + ' ' + self.patronymic
+        return '%s %s %s' % (self.surname, self.name, self.patronymic)
 
     class Meta:
         db_table = 'referees'
@@ -169,7 +169,7 @@ class TournamentReferee(models.Model):
         on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.referee
+        return str(self.referee)
 
     class Meta:
         db_table = 'tournament_referees'
@@ -201,7 +201,7 @@ class Game(models.Model):
         null=True)
 
     def __str__(self):
-        return 'Партия между ' + self.first_player + ' и ' + self.second_player
+        return 'Партия между ' + str(self.first_player) + ' и ' + str(self.second_player)
 
     class Meta:
         db_table = 'games'

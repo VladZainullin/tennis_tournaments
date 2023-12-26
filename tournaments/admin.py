@@ -3,7 +3,6 @@ from tournaments.models import *
 
 
 class TournamentAdmin(admin.ModelAdmin):
-    readonly_fields = [f.name for f in TournamentPlayer._meta.get_fields()]
     list_filter = [f.name for f in Tournament._meta.get_fields() if f.name != 'id']
     search_fields = [f.name for f in Tournament._meta.get_fields() if f.name != 'id']
 
@@ -23,7 +22,7 @@ class GameAdmin(admin.ModelAdmin):
     search_fields = [f.name for f in Game._meta.get_fields() if f.name != 'id']
 
 
-admin.site.register(Tournament)
-admin.site.register(TournamentReferee)
-admin.site.register(TournamentPlayer)
-admin.site.register(Game)
+admin.site.register(Tournament, TournamentAdmin)
+admin.site.register(TournamentReferee, TournamentRefereeAdmin)
+admin.site.register(TournamentPlayer, TournamentPlayerAdmin)
+admin.site.register(Game, GameAdmin)

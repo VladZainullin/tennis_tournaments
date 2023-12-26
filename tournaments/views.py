@@ -45,7 +45,7 @@ def home_view(request):
 
     if request.user.organizer:
         tournaments_without_organizer = Tournament.objects.exclude(
-            tournamentplayer__player_id=request.user.organizer_id)
+            organizer_id=request.user.organizer_id)
 
         context = {
             'tournaments': tournaments_without_organizer

@@ -2,7 +2,16 @@ from django.contrib import admin
 from tournaments.models import *
 
 
+class TournamentPlayerInline(admin.TabularInline):
+    model = TournamentPlayer
+
+
+class TournamentRefereeInline(admin.TabularInline):
+    model = TournamentReferee
+
+
 class TournamentAdmin(admin.ModelAdmin):
+    inlines = [TournamentPlayerInline, TournamentRefereeInline]
     list_filter = [f.name for f in Tournament._meta.get_fields() if f.name != 'id']
     search_fields = [f.name for f in Tournament._meta.get_fields() if f.name != 'id']
 

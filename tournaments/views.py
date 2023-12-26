@@ -16,6 +16,15 @@ def logout_view(request):
 
 
 def home_view(request):
+    if request.user.is_anonymous or request.user.is_superuser:
+        tournaments = Tournament.objects.all()
+
+        context = {
+            'tournaments': tournaments
+        }
+
+        return render(request, 'home.html', context)
+
     if request.user.player:
         tournaments_without_player = Tournament.objects.exclude(tournamentplayer__player_id=request.user.player_id)
 
@@ -43,14 +52,6 @@ def home_view(request):
         }
 
         return render(request, 'home.html', context)
-
-    tournaments = Tournament.objects.all()
-
-    context = {
-        'tournaments': tournaments
-    }
-
-    return render(request, 'home.html', context)
 
 
 def my_tournaments_view(request):

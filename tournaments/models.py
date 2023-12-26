@@ -130,7 +130,7 @@ class TournamentPlayer(models.Model):
         on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Игрок ' + self.player + ' на турнире ' + self.tournament
+        return 'Игрок ' + str(self.player) + ' на турнире ' + str(self.tournament)
 
     class Meta:
         db_table = 'tournament_players'

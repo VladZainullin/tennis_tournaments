@@ -111,7 +111,7 @@ def mark_winner_view(request, game_id: int):
     game.score = 1
     game.save()
 
-    relation_game = Game.objects.get(first_player=game.second_player, second_player=game.first_player)
+    relation_game = Game.objects.get(first_player=game.second_player, second_player=game.first_player, tournament=game.tournament)
     relation_game.score = 0
 
     relation_game.save()
